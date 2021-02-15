@@ -80,7 +80,13 @@ syscall kputc(uchar c)
     // TODO: Check UART flags register.
     //       Once the Transmitter FIFO is not full, send character c.
 
-    return SYSERR;
+	if(!(regptr & PL011_FR_TXFF))
+	{
+		*regptr = c;
+		return c;
+	}
+
+	return SYSERR;
 }
 
 /**
