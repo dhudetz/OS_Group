@@ -40,7 +40,7 @@ syscall kgetc(void)
 	}
 	else
 	{
-		return *regptr;
+		return (int)*regptr;
 	}
 	
 	return SYSERR;
@@ -54,7 +54,7 @@ syscall kcheckc(void)
 {
 	volatile struct pl011_uart_csreg *regptr;
  	regptr = (struct pl011_uart_csreg *)0x3F201000;
-	if(ungetArray[0] || (regptr & PL011_FR_RXFF))
+	if(ungetArray[0] || (*regptr & PL011_FR_RXFF))
 		return 1;
 	return 0;
 }
@@ -91,15 +91,17 @@ syscall kungetc(unsigned char c)
  */
 syscall kputc(uchar c)
 {
-    volatile struct pl011_uart_csreg *regptr;
+	volatile struct pl011_uart_csreg *regptr;
+	
+	/* Pointer to the UART control and status registers.  */
+	regptr = (struct pl011_uart_csreg *)0x3F201000;
+	if(!(*regptr & PL011_FR_TXFF))
+	{
+		*regptr = c;
+		return (int) c;
+	}
 
-    /* Pointer to the UART control and status registers.  */
-    regptr = (struct pl011_uart_csreg *)0x3F201000;
-
-    // TODO: Check UART flags register.
-    //       Once the Transmitter FIFO is not full, send character c.
-
-    return SYSERR;
+	return SYSERR;
 }
 
 /**
