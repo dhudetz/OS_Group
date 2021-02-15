@@ -27,20 +27,22 @@ syscall kgetc(void)
 	int check = 0;
 	while(!check)
 		check = kcheckc();
-	if(ungetArray[0])
+	if(ungetArray[0] != NULL)
 	{
-		int i = UNGETMAX - 1;
-		for(i; i>=0; i--)
-			if(ungetArray[i])
+		int i;
+		for(i = UNGETMAX - 1; i>=0; i--)
+		{
+			if(ungetArray[i] != NULL)
 			{
-				char buffer = ungetArray[i];
+				unsigned char buffer = ungetArray[i];
 				ungetArray[i] = NULL;
 				return buffer;
 			}
+		}
 	}
 	else
 	{
-		return (int)*regptr;
+		return (int)regptr->dr;
 	}
 	
 	return SYSERR;
@@ -54,7 +56,7 @@ syscall kcheckc(void)
 {
 	volatile struct pl011_uart_csreg *regptr;
  	regptr = (struct pl011_uart_csreg *)0x3F201000;
-	if(ungetArray[0] || (*regptr & PL011_FR_RXFF))
+	if(ungetArray[0] != NULL || (regptr->fr & PL011_FR_RXFF) == 1)
 		return 1;
 	return 0;
 }
@@ -67,13 +69,15 @@ syscall kcheckc(void)
 syscall kungetc(unsigned char c)
 {
 	// TODO: Check for room in unget buffer, put the character in or discard.
-	int i = 0;
-	for(i; i<UNGETMAX; i++)
-		if(!ungetArray[i])
+	int i;
+	for(i = 0; i<UNGETMAX; i++)
+	{
+		if(ungetArray[i] == NULL)
 		{
 			ungetArray[i] = c;
 			return c;
 		}
+	}
 	return SYSERR;
 }
 
@@ -95,11 +99,11 @@ syscall kputc(uchar c)
 	
 	/* Pointer to the UART control and status registers.  */
 	regptr = (struct pl011_uart_csreg *)0x3F201000;
-	if(!(*regptr & PL011_FR_TXFF))
-	{
-		*regptr = c;
-		return (int) c;
-	}
+	int isEmpty = 0;
+	while(isEmpty==0)
+		isEmpty = (regptr->fr & PL011_FR_TXFE);
+	regptr->dr = c;
+	return c;
 
 	return SYSERR;
 }

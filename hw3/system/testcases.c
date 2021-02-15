@@ -31,7 +31,7 @@ void testcases(void)
  	c = kgetc();
 	switch (c)
 	{
-	case 'a';	
+	case 'a':	
 		kprintf("you selected test a\r\n");
         // TODO: Test your operating system!
 
