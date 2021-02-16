@@ -24,11 +24,6 @@ syscall kgetc(void)
 	
  	/* Pointer to the UART control and status registers.  */
  	regptr = (struct pl011_uart_csreg *)0x3F201000;
-	int check = 0;
-	while(check == 0)
-	{
-		check = kcheckc();
-	}
 	if(ungetArray[0] != NULL)
 	{
 		int i;
@@ -44,6 +39,8 @@ syscall kgetc(void)
 	}
 	else
 	{
+		while((regptr->fr & PL011_FR_RXFE) != 0)
+			continue;
 		return (int)regptr->dr;
 	}
 	
@@ -58,7 +55,7 @@ syscall kcheckc(void)
 {
 	volatile struct pl011_uart_csreg *regptr;
  	regptr = (struct pl011_uart_csreg *)0x3F201000;
-	if(ungetArray[0] != NULL || (regptr->fr & PL011_FR_RXFF) != 0)
+	if(ungetArray[0] != NULL || (regptr->fr & PL011_FR_RXFE) == 0)
 		return 1;
 	return 0;
 }
@@ -77,7 +74,7 @@ syscall kungetc(unsigned char c)
 		if(ungetArray[i] == NULL)
 		{
 			ungetArray[i] = c;
-			return c;
+			return (int) c;
 		}
 	}
 	return SYSERR;
@@ -105,7 +102,7 @@ syscall kputc(uchar c)
 	while(isEmpty==0)
 		isEmpty = (regptr->fr & PL011_FR_TXFE);
 	regptr->dr = c;
-	return c;
+	return (int) c;
 
 	return SYSERR;
 }
