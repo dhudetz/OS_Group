@@ -1,4 +1,12 @@
 /**
+ *COSC 3250 - Project 3
+ *Testcases for kprintf function
+ *@author Martin Boehm and Danny Hudetz
+ *Instructor Sabirat Rubya
+ *TA-BOT:MAILTO martin.boehm@marquette.edu daniel.hudetz@marquette.edu
+ */
+
+/**
  * @file testcases.c
  * @provides testcases
  *
@@ -30,7 +38,7 @@ void testcases(void)
 	kprintf("===TEST BEGIN===\r\n");
 	while(testNum != 'q')
 	{
-		kprintf("Select test number (1->10) or 'q' to quit.\r\n");
+		kprintf("Select test number (1->9) or 'q' to quit.\r\n");
  		testNum = kgetc();
 		switch (testNum)
 		{
@@ -93,6 +101,56 @@ void testcases(void)
 			case 1:
 				kprintf("FAILED: Unexpected char detected.\r\n");
 				break;
+			}
+			break;
+		case '7':
+			kungetc('a');
+			c = kgetc();
+			switch(c)
+			{
+			case 'a':
+				kprintf("PASSED: Character 'a' was recieved from unget buffer.\r\n");
+				break;
+			default:
+				kprintf("FAILED: Character 'a' was not recieved from unget buffer.\r\n");
+				break;
+			}
+			break;
+		case '8':
+			kungetc('a');
+			kungetc('b');
+			kungetc('c');
+			kgetc();
+			c = kgetc();
+			switch(c)
+			{
+			case 'b':
+				kprintf("PASSED: Character 'b' was recieved on the kgetc call.\r\n");
+				break;
+			default:
+				kprintf("FAILED: Character 'b' was not recieved on the kgetc call.\r\n");
+				break;
+			}
+			kgetc();
+			break;
+		case '9':
+			for(i = 0; i < 10; i++)
+			{
+				kungetc('a');
+			}
+			c = kungetc('a');
+			switch(c)
+			{
+			case -1:
+				kprintf("PASSED: SYSERR was thrown, too many entries in unget buffer.\r\n");
+				break;
+			default:
+				kprintf("FAILED: SYSERR was not thrown, even though unget buffer was overfilled.\r\n");
+				break;
+			}
+			for(i = 0; i < 10; i++)
+			{
+				kgetc();
 			}
 			break;
 		default:

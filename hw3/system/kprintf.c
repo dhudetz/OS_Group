@@ -1,4 +1,12 @@
 /**
+ *COSC 3250 - Project 3
+ *The structure of our kprintf function, which many hours were spent
+ *@authors Martin Boehm and Danny Hudetz
+ *Instructor Sabirat Rubya
+ *TA-BOT:MAILTO martin.boehm@marquette.edu daniel.hudetz@marquette.edu
+ */
+
+/**
  * @file kprintf.c
  */
 
