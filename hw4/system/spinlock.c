@@ -69,7 +69,8 @@ syscall lock_acquire(spinlock_t lock)
 	
 	if (isbadlock(lock))
 		return SYSERR;
-	_lock_acquire =  
+	//call _lock_acquire assembly routine
+	
 	return OK;
 }
 
