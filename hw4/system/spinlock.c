@@ -1,4 +1,12 @@
 /**
+* COSC 3250 - Project 4
+* Gimme dat lock but in C.
+* @authors Danny Hudetz Martin Boehm
+* Instructor Sabirat Rubya
+* TA-BOT:MAILTO daniel.hudetz@marquette.edu martin.boehm@marquette.edu
+*/
+
+/**
  * @file spinlock.c
  * @provides lock_create, lock_free, lock_acquire, lock_release.
  *
@@ -70,7 +78,9 @@ syscall lock_acquire(spinlock_t lock)
 	if (isbadlock(lock))
 		return SYSERR;
 	//call _lock_acquire assembly routine
-	
+	_lock_acquire(&locktab[lock].lock);
+	//kprintf("%d\n", getcpuid());
+	locktab[lock].core = getcpuid();	
 	return OK;
 }
 
@@ -87,7 +97,8 @@ syscall lock_release(spinlock_t lock)
 	
 	if (isbadlock(lock))
 		return SYSERR;
-	
+	_lock_release(&locktab[lock].lock);
+	locktab[lock].core = -1;	
 	return OK;
 }
 

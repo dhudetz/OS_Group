@@ -35,6 +35,7 @@ void testcases(void)
 	int testNum = 0;
 	int i = 0;
 	char word[] = "hello";
+	int check = 0;
 	kprintf("===TEST BEGIN===\r\n");
 	while(testNum != 'q')
 	{
@@ -92,7 +93,7 @@ void testcases(void)
 			break;
     		case '5':
 			kprintf("Test 5: kcheckc() no input test.\r\n");
-			int check = kcheckc();
+			check = kcheckc();
 			switch(check)
 			{
 			case 0:
@@ -103,6 +104,20 @@ void testcases(void)
 				break;
 			}
 			break;
+		case '6':
+			kprintf("Test 6: kcheckc() buffer test.\r\n");
+			kungetc('c');
+			check = kcheckc();
+			switch(check)
+			{
+			case 0:
+				kprintf("FAILED: Char in buffer undetected.\r\n");
+				break;
+			case 1:
+				kprintf("PASSED: Char in buffer detected.\r\n");
+			kgetc();
+			break;
+			}
 		case '7':
 			kungetc('a');
 			c = kgetc();
@@ -157,6 +172,7 @@ void testcases(void)
 			kprintf("Input valid test number.\r\n");
 			break;
 		}
+		kprintf("\r\n");
 	}
 
 	kprintf("\r\n===TEST END===\r\n");

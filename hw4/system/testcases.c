@@ -1,4 +1,13 @@
 /**
+* COSC 3250 - Project 4
+* Testing our awesome lock.
+* @authors Danny Hudetz Martin Boehm
+* Instructor Sabirat Rubya
+* TA-BOT:MAILTO daniel.hudetz@marquette.edu martin.boehm@marquette.edu
+*/
+
+
+/**
  * @file testcases.c
  * @provides testcases
  *
@@ -87,9 +96,18 @@ void testcases(void)
         // Acquire lock on another core.
         // This tests that the core field is being set.
         // Expected output is that lock field is locked and core field is 1.
-        
+       	 
         // TODO: Write this testcase.
-        break;
+        testlock = lock_create();
+
+	unparkcore(1, (void *)lock_acquire, (void *)testlock);
+	
+	print_lockent(testlock);
+
+        lock_release(testlock);
+	lock_free(testlock);
+	
+	break;
 
     case '5':
         // Core competition test case.
@@ -102,9 +120,16 @@ void testcases(void)
         // Expected output is that the core field should be 0.
 
         // TODO: Write this testcase.
+        testlock = lock_create();
+        lock_acquire(testlock);
+	unparkcore(1, (void *)lock_acquire, (void *)testlock);
+	print_lockent(testlock);
+        lock_release(testlock);
+        
         lock_free(testlock);
         break;
-
+    case '6':
+	break;
     default:
         // Default testcase.
         // Output is non-deterministic.
@@ -116,8 +141,7 @@ void testcases(void)
         unparkcore(2, (void *)core_print, NULL);
         unparkcore(3, (void *)core_print, NULL);
     }
-
-
+    
     kprintf("\r\n===TEST END===\r\n");
     return;
 }

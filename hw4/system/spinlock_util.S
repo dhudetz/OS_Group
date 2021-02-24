@@ -1,3 +1,12 @@
+
+/**
+* COSC 3250 - Project 4
+* Gimme dat lock.
+* @authors Danny Hudetz Martin Boehm
+* Instructor Sabirat Rubya
+* TA-BOT:MAILTO daniel.hudetz@marquette.edu martin.boehm@marquette.edu
+*/
+
 /**
  * @file spinlock_util.S
  * @provides _lock_acquire _lock_release _atomic_increment
@@ -31,9 +40,11 @@ _lock_acquire:
 	cmp     r1, #SPINLOCK_LOCKED
 	beq     _lock_acquire
 
-	strex   r2, r1, [r0]
-	cmp     r2, #0x00
-	bne     _lock_acquire
+	
+	mov     r3, #SPINLOCK_LOCKED
+	strex   r2, r3, [r0]
+	cmp     r2, #1
+	beq     _lock_acquire
 
 	dmb			/* Data Memory Barrier	*/
 	bx	lr
