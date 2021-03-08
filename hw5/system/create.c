@@ -52,6 +52,17 @@ syscall create(void *funcaddr, ulong ssize, char *name, ulong nargs, ...)
 	ppcb = &proctab[pid];
 	/* setup PCB entry for new proc */
 	ppcb->state = PRSUSP;
+	ppcb->stkbase = saddr;
+	ppcb->stklen = ssize;
+	ppcb->core_affinity = getcpuid();
+	char process_name[PNMLEN];
+	int i;
+	for(i = 0; i < PNMLEN; i++)
+	{
+		process_name[i] = *name;
+		name++;
+	}
+	ppcb->name = process_name;
 
 	// TODO: Setup PCB entry for new process.
 
