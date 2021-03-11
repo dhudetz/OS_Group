@@ -54,15 +54,8 @@ syscall create(void *funcaddr, ulong ssize, char *name, ulong nargs, ...)
 	ppcb->state = PRSUSP;
 	ppcb->stkbase = saddr;
 	ppcb->stklen = ssize;
-	ppcb->core_affinity = getcpuid();
-	char process_name[PNMLEN];
-	int i;
-	for(i = 0; i < PNMLEN; i++)
-	{
-		process_name[i] = *name;
-		name++;
-	}
-	ppcb->name = process_name;
+	ppcb->core_affinity = -1;
+	strncpy(ppcb->name, name, sizeof(name));
 
 	// TODO: Setup PCB entry for new process.
 
@@ -84,6 +77,42 @@ syscall create(void *funcaddr, ulong ssize, char *name, ulong nargs, ...)
 	{
 		*--saddr = 0;
 	}
+	//Access unnamed variables
+	int p;
+	int counter = 0;
+	int arg_reg;
+	va_start(ap, nargs);
+	while((p = (va_arg(ap, int))))
+	{
+		if(counter<4)
+		{
+			switch(counter){
+			case 0:
+				arg_reg = PREG_R0; 
+			case 1:
+				arg_reg = PREG_R1;
+			case 2:
+				arg_reg = PREG_R2;
+			case 3:
+				arg_reg = PREG_R3;
+			}
+			ppcb->regs[arg_reg] = p;
+		}
+		else
+		{
+			*saddr = p;
+			saddr++;
+		}
+		counter++;
+	}
+	va_end(ap);
+	ppcb->regs[PREG_SP] = (int)saddr;
+	ppcb->regs[PREG_LR] = (int)userret;
+	ppcb->regs[PREG_PC] = (int)funcaddr;
+
+	//Fill registers 0-3 with first arguments
+	
+	//If there is more arguments fill stack and pass pointer
 
 	// TODO: Initialize process context.
 	//

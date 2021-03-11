@@ -29,7 +29,6 @@ ctxsw:
 	.func ctxsw
 
 	// TODO: Save callee-save ("non-volatile") registers.
-	// WORKED ON LOGIC WITH BOB DIRMISH
 	str	R4,[R0, #PREG_R4 * 4]
 	str	R5,[R0, #PREG_R5 * 4]
 	str	R6,[R0, #PREG_R6 * 4]
@@ -38,13 +37,13 @@ ctxsw:
 	str	R9,[R0, #PREG_R9 * 4]
 	str	R10,[R0, #PREG_R10 * 4]
 	str	R11,[R0, #PREG_R11 * 4]
-
-	//mov   R12, R0
+	str	R12,[R0, #PREG_IP * 4]
+	str	R13,[R0, #PREG_SP * 4]
+	str	R14,[R0, #PREG_LR * 4]
+	str	R14,[R0, #PREG_PC * 4]	
 
 	// TODO: Restore callee-save ("non-volatile") registers.
-	// WORKED ON LOGIC WITH BOB DIRMISH
-	// mov	R1, R12
-
+	
 	ldr	R4,[R1, #PREG_R4 * 4]
 	ldr	R5,[R1, #PREG_R5 * 4]
 	ldr	R6,[R1, #PREG_R6 * 4]
@@ -53,6 +52,14 @@ ctxsw:
 	ldr	R9,[R1, #PREG_R9 * 4]
 	ldr	R10,[R1, #PREG_R10 * 4]
 	ldr	R11,[R1, #PREG_R11 * 4]
+	ldr	R12,[R1, #PREG_IP * 4]
+	ldr	R13,[R1, #PREG_SP * 4]
+	
+	// link to where old program left off
+	ldr	R14,[R1, #PREG_LR * 4]
+	
+	// next instrucion at beginning of new program
+	ldr	R15,[R1, #PREG_PC * 4]
 
 	// TODO: Jump to next function.
 

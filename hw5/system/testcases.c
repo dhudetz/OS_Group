@@ -108,9 +108,19 @@ void testcases(void)
         pid = create((void *)testbigargs, INITSTK, "MAIN1", 8,
                      0x11111111, 0x22222222, 0x33333333, 0x44444444,
                      0x55555555, 0x66666666, 0x77777777, 0x88888888);
-        printpcb(pid);
+	
+   	  
         // TODO: print out stack with extra args
-        // TODO: ready(pid, RESCHED_YES, 0);
+        
+    	pcb *ppcb = NULL;
+    	ppcb = &proctab[pid];
+	int *sp = (int*)ppcb->regs[PREG_SP];
+	while(sp)
+	{
+		kprintf("%d", *sp);
+		sp++;
+	}
+        ready(pid, RESCHED_YES, 0);
         break;
 
     case '2':
