@@ -1,4 +1,4 @@
-../system/main.o: ../system/main.c ../include/xinu.h ../include/arm.h \
+../system/timer.o: ../system/timer.c ../include/xinu.h ../include/arm.h \
  ../include/interrupt.h ../include/stddef.h ../include/bcm2837.h \
  ../include/kernel.h ../include/stdarg.h ../include/conf.h \
  ../include/memory.h ../include/compiler.h ../include/stdio.h \

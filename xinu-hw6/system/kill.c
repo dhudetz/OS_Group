@@ -32,13 +32,13 @@ syscall kill(int pid)
 
     _atomic_decrement_pre(&numproc);
 
-    if (numproc <= 4)
+    /**if (numproc <= 4)
     {
         // all processes are done running
         kprintf("\r\n\r\nAll user process have completed.\r\n\r\n");
         extern void halt(void);
         halt();
-    }
+    }**/
 
     switch (ppcb->state)
     {
