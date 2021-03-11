@@ -12,6 +12,21 @@
 
 #include <xinu.h>
 
+void infinite_loop(void)
+{
+	int counter = 0;
+	uint cpuid = getcpuid();
+	
+	enable();
+	while(1)
+	{
+		kprintf("%d : infinity and beyond from process %d",
+		 counter, currpid[cpuid]);
+		counter++;
+		udelay(1);
+	}
+}
+
 void printpid(int times)
 {
     int i = 0;
@@ -20,7 +35,7 @@ void printpid(int times)
     enable();
     for (i = 0; i < times; i++)
     {
-        kprintf("This is process %d\r\n", currpid[cpuid]);
+        kprintf("%d : This is process %d\r\n", i, currpid[cpuid]);
         udelay(1);
     }
 }
@@ -61,13 +76,25 @@ void testcases(void)
 #if AGING
         // AGING TESTCASE
         kprintf("AGING is enabled.\r\n");
-
-        // TODO: Create a testcase that demonstrates aging 
-
+        ready(create
+              ((void *)printpid, INITSTK, PRIORITY_HIGH, "PRINTER-A", 1,
+               100), RESCHED_NO, 0);
+        ready(create
+              ((void *)printpid, INITSTK, PRIORITY_LOW, "PRINTER-B", 1,
+               100), RESCHED_YES, 0);
+        /**ready(create
+              ((void *)printpid, INITSTK, PRIORITY_LOW, "PRINTER-C", 1,
+               10000), RESCHED_YES, 0);**/
 
 #else
         // STARVING TESTCASE
         kprintf("\r\nAGING is not currently enabled.\r\n");
+        ready(create
+              ((void *)printpid, INITSTK, PRIORITY_HIGH, "PRINTER-A", 1,
+               100), RESCHED_NO, 0);
+        ready(create
+              ((void *)printpid, INITSTK, PRIORITY_LOW, "PRINTER-B", 1,
+               100), RESCHED_YES, 0);
 
         // TODO: Create a testcase that demonstrates starvation
 
@@ -80,12 +107,29 @@ void testcases(void)
 #if PREEMPT
         // PREEMPTION TESTCASE
         kprintf("\r\nPreemption is enabled.\r\n");
-
+        // first two should oscillate, last should only complete after first 2
+	ready(create
+              ((void *)printpid, INITSTK, PRIORITY_MED, "PRINTER-A", 1,
+               1000), RESCHED_NO, 0);
+        ready(create
+              ((void *)printpid, INITSTK, PRIORITY_MED, "PRINTER-B", 1,
+               1000), RESCHED_NO, 0);
+        ready(create
+              ((void *)printpid, INITSTK, PRIORITY_LOW, "PRINTER-B", 1,
+               100), RESCHED_YES, 0);
+	
         // TODO: Create a testcase that demonstrates preemption
 
 
 #else
+	// first should complete before second (all the way)
         kprintf("\r\nPreemption is not currently enabled...\r\n");
+        ready(create
+              ((void *)printpid, INITSTK, PRIORITY_MED, "PRINTER-B", 1,
+               1000), RESCHED_NO, 0);
+        ready(create
+              ((void *)printpid, INITSTK, PRIORITY_MED, "PRINTER-B", 1,
+               1000), RESCHED_YES, 0);
 #endif
         break;
 

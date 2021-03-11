@@ -81,7 +81,6 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name, ulong na
 	//Access unnamed variables
 	int p;
 	int counter = 0;
-	int arg_reg;
 	va_start(ap, nargs);
 	while((p = (va_arg(ap, int))))
 	{
