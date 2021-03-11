@@ -86,22 +86,11 @@ syscall create(void *funcaddr, ulong ssize, char *name, ulong nargs, ...)
 	{
 		if(counter<4)
 		{
-			switch(counter){
-			case 0:
-				arg_reg = PREG_R0; 
-			case 1:
-				arg_reg = PREG_R1;
-			case 2:
-				arg_reg = PREG_R2;
-			case 3:
-				arg_reg = PREG_R3;
-			}
-			ppcb->regs[arg_reg] = p;
+			ppcb->regs[counter] = p;
 		}
 		else
 		{
-			*saddr = p;
-			saddr++;
+			*(saddr+counter-4) = p;
 		}
 		counter++;
 	}

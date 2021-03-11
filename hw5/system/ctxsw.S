@@ -44,22 +44,27 @@ ctxsw:
 
 	// TODO: Restore callee-save ("non-volatile") registers.
 	
-	ldr	R4,[R1, #PREG_R4 * 4]
-	ldr	R5,[R1, #PREG_R5 * 4]
-	ldr	R6,[R1, #PREG_R6 * 4]
-	ldr	R7,[R1, #PREG_R7 * 4]
-	ldr	R8,[R1, #PREG_R8 * 4]
-	ldr	R9,[R1, #PREG_R9 * 4]
-	ldr	R10,[R1, #PREG_R10 * 4]
-	ldr	R11,[R1, #PREG_R11 * 4]
-	ldr	R12,[R1, #PREG_IP * 4]
-	ldr	R13,[R1, #PREG_SP * 4]
+	mov	R12,R1
+
+	ldr	R0,[R12, #PREG_R0 * 4]
+	ldr	R1,[R12, #PREG_R1 * 4]
+	ldr	R2,[R12, #PREG_R2 * 4]
+	ldr	R3,[R12, #PREG_R3 * 4]
+	ldr	R4,[R12, #PREG_R4 * 4]
+	ldr	R5,[R12, #PREG_R5 * 4]
+	ldr	R6,[R12, #PREG_R6 * 4]
+	ldr	R7,[R12, #PREG_R7 * 4]
+	ldr	R8,[R12, #PREG_R8 * 4]
+	ldr	R9,[R12, #PREG_R9 * 4]
+	ldr	R10,[R12, #PREG_R10 * 4]
+	ldr	R11,[R12, #PREG_R11 * 4]
+	ldr	R13,[R12, #PREG_SP * 4]
 	
 	// link to where old program left off
-	ldr	R14,[R1, #PREG_LR * 4]
+	ldr	R14,[R12, #PREG_LR * 4]
 	
 	// next instrucion at beginning of new program
-	ldr	R15,[R1, #PREG_PC * 4]
+	ldr	R15,[R12, #PREG_PC * 4]
 
 	// TODO: Jump to next function.
 
