@@ -1,14 +1,10 @@
 /**
- * @file testcases.c
- * @provides testcases
- *
- *
- * Modified by:	
- *
- * TA-BOT:MAILTO 
- *
+ * COSC 3250 - Project 6
+ * reschedule processes
+ * @authors Danny Hudetz Marty Boehm
+ * Instructor Rubya
+ * TA-BOT:MAILTO daniel.hudetz@marquette.edu martin.boehm@marquette.edu
  */
-/* Embedded XINU, Copyright (C) 2007.  All rights reserved. */
 
 #include <xinu.h>
 

@@ -34,7 +34,19 @@ void *getmem(ulong nbytes)
     nbytes = (ulong)roundmb(nbytes);
 
     im = disable();
-
+    
+    mhead = freelist[getcpuid()];
+    lock_acquire(mhead.memlock);
+    
+    currblock = mhead.head;
+    while(currblock)
+    {
+        if(currblock->length >= nbytes)
+            lock_release(mhead.memlock);
+            return currblock;
+        currblock = currblock->next;
+    }
+    return SYSERR;
 	/* TODO:
      *      - Use cpuid to use correct freelist
      *           ex: freelist[cpuid]
