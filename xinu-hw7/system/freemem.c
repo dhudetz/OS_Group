@@ -52,29 +52,29 @@ syscall freemem(void *memptr, ulong nbytes)
     }
     lock_acquire(mhead.memlock);
     prev = mhead.head;
-    next = curr->next;
+    next = prev->next->next;
     if(mhead.base == mem){
         if(mem+nbytes > (ulong)next)
  	    return SYSERR;
-	block.next = mhead.head;
+	block->next = mhead.head;
 	mhead.head = block;
     }
     else{
-	prev = next;
+	prev = prev->next;
 	next = next->next;
         while((ulong)next<mem){
-	    prev = next;
+	    prev = prev->next;
             next = next->next;
 	}
         if(mem+nbytes > (ulong)next)
 	    return SYSERR;
-	else if(mem < (ulong)prev + prev->length;
+	else if(mem < (ulong)prev + prev->length)
 	    return SYSERR;	
 	prev->next = block;
 	block->next = next;
     }
     lock_release(mhead.memlock);
-	/* TODO:
+         /* TODO:
      *      - Determine correct freelist to return to
      *        based on block address
      *      - Acquire memory lock (memlock)

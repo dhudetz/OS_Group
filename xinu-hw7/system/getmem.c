@@ -48,10 +48,10 @@ void *getmem(ulong nbytes)
     else if(prev->length-8 > nbytes){
 	while(newbytes%8 != 0)
 	    newbytes++;
-	leftover = (struct memblock *)((ulong)prev + newbytes)
+	leftover = (struct memblock *)((ulong)prev + newbytes);
 	leftover->next = curr;
 	leftover->length = prev->length - newbytes;
-	mhead->head = leftover;
+	mhead.head = leftover;
 	prev->length = newbytes;
         lock_release(mhead.memlock);
 	return prev;
@@ -66,7 +66,7 @@ void *getmem(ulong nbytes)
 	    else{
 	        while(newbytes%8 != 0)
 		    newbytes++;
-		leftover = (struct memblock *)((ulong)curr + newbytes)
+		leftover = (struct memblock *)((ulong)curr + newbytes);
 		leftover->next = curr->next;
 		leftover->length = curr->length - newbytes;
 		prev->next = leftover;

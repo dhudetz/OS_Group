@@ -1,4 +1,4 @@
-../system/clkinit.o: ../system/clkinit.c ../include/xinu.h \
+../system/freemem.o: ../system/freemem.c ../include/xinu.h \
  ../include/arm.h ../include/interrupt.h ../include/stddef.h \
  ../include/bcm2837.h ../include/kernel.h ../include/stdarg.h \
  ../include/conf.h ../include/memory.h ../include/spinlock.h \
