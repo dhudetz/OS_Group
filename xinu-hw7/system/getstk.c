@@ -1,9 +1,9 @@
 /**
  * @file getstk.c
  * @provides getstk
- *
- * $Id: getstk.c 190 2007-07-13 22:24:20Z agember $
- */
+ *  *
+ *   * $Id: getstk.c 190 2007-07-13 22:24:20Z agember $
+ *    */
 /* Embedded XINU, Copyright (C) 2007.  All rights reserved. */
 
 #include <xinu.h>
@@ -12,10 +12,10 @@
 extern void *end;
 
 /**
- * Allocate stack memory, returning address of topmost word.
- * @param nbytes amount of memory to allocate, in bytes
- * @return address of the topmost word
- */
+ *  * Allocate stack memory, returning address of topmost word.
+ *   * @param nbytes amount of memory to allocate, in bytes
+ *    * @return address of the topmost word
+ *     */
 void *getstk(ulong nbytes)
 {
     /* NOTE: This is a completely broken implementation of getstk(),      */

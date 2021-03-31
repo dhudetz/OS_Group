@@ -17,7 +17,10 @@
 syscall free(void *ptr)
 {
     struct memblock *block;
-
+    
+    block = (struct memblock *)ptr;
+    block--;
+    freemem(block, block->length);
 	/* TODO:
      *      1) set block to point to memblock to be free'd (ptr)
      *      2) find accounting information of the memblock

@@ -29,6 +29,13 @@ void *malloc(ulong size)
         return NULL;
     }
 
+    pmem->length = size;
+    pmem->next = pmem;
+    size = size + sizeof(pmem);
+    pmem = getmem(size);
+    if((void *)pmem == (void *)SYSERR)
+	return NULL;
+
 	/** TODO:
       *      1) Make room for accounting info
       *      2) Acquire memory with getmem

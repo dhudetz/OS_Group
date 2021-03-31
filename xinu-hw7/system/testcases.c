@@ -1,16 +1,12 @@
-/**
- * @file testcases.c
- * @provides testcases
- *
- *
- * Modified by:	
- *
- * TA-BOT:MAILTO 
- *
- */
-/* Embedded XINU, Copyright (C) 2007.  All rights reserved. */
 
-#include <xinu.h>
+/**
+* COSC 3250 - Project 7
+* Explain briefly the functionality of the program.
+* * @authors Danny Hudetz Martin Boehm
+* * Instructor Sabirat Rubya
+* * TA-BOT:MAILTO daniel.hudetz@marquette.edu martin.boehm@marquette.edu
+* */
+
 
 void print_freelist(int corenum)
 {
@@ -94,6 +90,13 @@ void testcases(void)
 	a = getmem(1);
 	print_freelist(0);
 	freemem(a, 1);
+	print_freelist(0);
+	break;
+    case '6':
+	print_freelist(0);
+	a = malloc(8);
+	print_freelist(0);
+	free(a);
 	print_freelist(0);
 	break;
     default:
