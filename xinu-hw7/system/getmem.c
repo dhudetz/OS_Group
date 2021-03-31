@@ -42,6 +42,7 @@ void *getmem(ulong nbytes)
     ulong newbytes = nbytes;
     if(prev->length >= nbytes && nbytes > prev->length - 8){
 	mhead.head = curr;
+	freelist[cpuid].length += nbytes;
         lock_release(mhead.memlock);
 	return prev;
     }
@@ -53,6 +54,7 @@ void *getmem(ulong nbytes)
 	leftover->length = prev->length - newbytes;
 	freelist[cpuid].head = leftover;
 	prev->length = newbytes;
+	freelist[cpuid].length -= nbytes;
         lock_release(mhead.memlock);
 	return prev;
     }
@@ -60,6 +62,7 @@ void *getmem(ulong nbytes)
         while(curr){
             if(curr->length >= nbytes && nbytes > curr->length - 8){
     	        prev->next = curr->next;
+		freelist[cpuid].length += nbytes;
     		lock_release(mhead.memlock);
                 return curr;
 	    }
@@ -71,6 +74,7 @@ void *getmem(ulong nbytes)
 		leftover->length = curr->length - newbytes;
 		prev->next = leftover;
 		curr->length = newbytes;
+		freelist[cpuid].length -= nbytes;
     		lock_release(mhead.memlock);
 		return curr;	
 	    }
