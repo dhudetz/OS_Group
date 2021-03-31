@@ -45,7 +45,7 @@ void *getmem(ulong nbytes)
         lock_release(mhead.memlock);
 	return prev;
     }
-    else if(prev->length-8 > nbytes){
+    else if(prev->length-8 >= nbytes){
 	while(newbytes%8 != 0)
 	    newbytes++;
 	leftover = (ulong)prev + newbytes;

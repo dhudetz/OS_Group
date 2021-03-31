@@ -17,10 +17,10 @@ void print_freelist(int corenum)
     register memblk *curr;
     curr = freelist[corenum].head;
     while(curr){
-        kprintf("FREE%dSIZE%d ", (ulong)curr, curr->length);
+        kprintf("FREE%dSIZE%d  ", (ulong)curr, curr->length);
 	curr = curr->next;	
     }
-    kprintf("\n");
+    kprintf("\r\n\r\n");
 }
 
 /**
@@ -28,35 +28,45 @@ void print_freelist(int corenum)
  */
 void testcases(void)
 {
-    uchar c;
+    uchar character;
 
     kprintf("===TEST BEGIN===\r\n");
     kprintf("0) Test priority scheduling\r\n");
 
     // TODO: Test your operating system!
-
-    c = kgetc();
-    switch (c)
+    register memblk *a, *b, *c;
+    character = kgetc();
+    switch (character)
     {
     case '0':
 	print_freelist(0);
-        register memblk *a = getmem(16);
+        a = getmem(16);
 	print_freelist(0);
 	freemem(a, 1);
 	print_freelist(0);
         break;
     case '1':
 	print_freelist(0);
-	register memblk *b = getmem(16);
+	a = getmem(16);
 	print_freelist(0);
-	freemem(b, 16);
+	freemem(a, 16);
 	print_freelist(0);
-	register memblk *c = getmem(8);
+	b = getmem(8);
 	print_freelist(0);
-	freemem(c, 8);
+	freemem(b, 8);
 	print_freelist(0);
 	break;
-
+    case '2':
+	print_freelist(0);
+	a = getmem(16);
+	print_freelist(0);
+	freemem(a, 16);
+	print_freelist(0);
+	b = getmem(32);
+	print_freelist(0);
+	freemem(b, 32);
+	print_freelist(0);
+	break;
     default:
         break;
     }

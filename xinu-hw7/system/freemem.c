@@ -52,17 +52,16 @@ syscall freemem(void *memptr, ulong nbytes)
     }
     lock_acquire(mhead.memlock);
     prev = mhead.head;
-    next = prev->next->next;
+    next = prev->next;
     if(mhead.base == mem){
         if(mem+nbytes > (ulong)prev)
  	    return SYSERR;
+	block->length = nbytes;
 	block->next = mhead.head;
 	freelist[core].head = block;
     }
     else{
-	prev = prev->next;
-	next = next->next;
-        while((ulong)next<mem){
+        while(mem<(ulong)prev + prev->length){
 	    prev = prev->next;
             next = next->next;
 	}
