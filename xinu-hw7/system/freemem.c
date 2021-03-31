@@ -42,10 +42,10 @@ syscall freemem(void *memptr, ulong nbytes)
     
 
     register memhead mhead;
-    int i;
+    int core;
     ulong mem = (ulong)memptr;
-    for(i = 0; i<NCORES; i++){
-        mhead = freelist[i];
+    for(core = 0; core<NCORES; core++){
+        mhead = freelist[core];
 	ulong lastblock = mhead.base + mhead.bound;
 	if(mhead.base <= mem && lastblock > mem)
 	    break;
@@ -54,10 +54,10 @@ syscall freemem(void *memptr, ulong nbytes)
     prev = mhead.head;
     next = prev->next->next;
     if(mhead.base == mem){
-        if(mem+nbytes > (ulong)next)
+        if(mem+nbytes > (ulong)prev)
  	    return SYSERR;
 	block->next = mhead.head;
-	mhead.head = block;
+	freelist[core].head = block;
     }
     else{
 	prev = prev->next;

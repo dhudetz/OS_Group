@@ -17,9 +17,10 @@ void print_freelist(int corenum)
     register memblk *curr;
     curr = freelist[corenum].head;
     while(curr){
-        kprintf("%d ", curr);
+        kprintf("FREE%dSIZE%d ", (ulong)curr, curr->length);
 	curr = curr->next;	
     }
+    kprintf("\n");
 }
 
 /**
@@ -39,7 +40,22 @@ void testcases(void)
     {
     case '0':
 	print_freelist(0);
+        register memblk *a = getmem(16);
+	print_freelist(0);
+	freemem(a, 1);
+	print_freelist(0);
         break;
+    case '1':
+	print_freelist(0);
+	register memblk *b = getmem(16);
+	print_freelist(0);
+	freemem(b, 16);
+	print_freelist(0);
+	register memblk *c = getmem(8);
+	print_freelist(0);
+	freemem(c, 8);
+	print_freelist(0);
+	break;
 
     default:
         break;

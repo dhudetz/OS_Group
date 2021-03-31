@@ -34,12 +34,12 @@ void *getmem(ulong nbytes)
     nbytes = (ulong)roundmb(nbytes);
 
     im = disable();
-    
-    register memhead mhead = freelist[getcpuid()];
+    int cpuid = getcpuid();
+    register memhead mhead = freelist[cpuid];
     lock_acquire(mhead.memlock);
     prev = mhead.head;
     curr = prev->next;
-    int newbytes = nbytes;
+    ulong newbytes = nbytes;
     if(prev->length >= nbytes && nbytes > prev->length - 8){
 	mhead.head = curr;
         lock_release(mhead.memlock);
@@ -48,10 +48,10 @@ void *getmem(ulong nbytes)
     else if(prev->length-8 > nbytes){
 	while(newbytes%8 != 0)
 	    newbytes++;
-	leftover = (struct memblock *)((ulong)prev + newbytes);
+	leftover = (ulong)prev + newbytes;
 	leftover->next = curr;
 	leftover->length = prev->length - newbytes;
-	mhead.head = leftover;
+	freelist[cpuid].head = leftover;
 	prev->length = newbytes;
         lock_release(mhead.memlock);
 	return prev;
