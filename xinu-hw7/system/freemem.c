@@ -72,7 +72,6 @@ syscall freemem(void *memptr, ulong nbytes)
 	prev->next = block;
 	block->next = next;
     }
-    freelist[core].length += nbytes;
     lock_release(mhead.memlock);
          /* TODO:
      *      - Determine correct freelist to return to
