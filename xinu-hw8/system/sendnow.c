@@ -16,22 +16,27 @@
 
 syscall sendnow(int pid, message msg)
 {
-	register pcb *ppcb;
+	register pcb *spcb;
+	register pcb *rpcb;
 	
-	ppid = currpid[getcpuid()];
+	int ppid = currpid[getcpuid()];
 
-	if(isbadpid(ppid) !! isbadpid(pid))
-		return SYSERR:
+	if(isbadpid(ppid) || isbadpid(pid))
+		return SYSERR;
 
-	ppcb = &proctab[ppid];
-	acquire_lock(ppcb->msg_var.core_com_lock);
-	if(&proctab[pid]->msg_var.hasMessage){
-		release_lock(ppcb->msg_var.core_com_lock);
+	spcb = &proctab[ppid];
+	rpcb = &proctab[pid];
+
+	lock_acquire(spcb->msg_var.core_com_lock);
+
+	if(rpcb->msg_var.hasMessage){
+		lock_release(spcb->msg_var.core_com_lock);
 		return SYSERR;
 	}
 	else{
-		ppcb->msg_var.msgout = msg;
-		release_lock(ppcb->msg_var.core_com_lock);
+		rpcb->msg_var.msgin = msg;
+		rpcb->msg_var.hasMessage = 1;
+		lock_release(spcb->msg_var.core_com_lock);
 	}
 	/* TODO:
  	* - Acquire Lock and release when appropriate
