@@ -1,3 +1,4 @@
+
 /**
  * @file create.c
  * @provides create, newpid, userret
@@ -15,7 +16,7 @@ extern int _atomic_increment_mod(int *, int);
 
 static pid_typ newpid(void);
 void userret(void);
-
+void *getstk(ulong);
 /**
  * Create a new process to start running a function.
  * @param funcaddr address of function that will begin in new process
@@ -38,7 +39,7 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name, ulong na
 		ssize = MINSTK;
 	ssize = (ulong)(ssize + 3) & 0xFFFFFFFC;
 	/* round up to even boundary    */
-	saddr = (ulong *)getmem(ssize);     /* allocate new stack and pid   */
+	saddr = (ulong *)getstk(ssize);     /* allocate new stack and pid   */
 	pid = newpid();
 	/* a little error checking      */
 	if ((((ulong *)SYSERR) == saddr) || (SYSERR == pid))
@@ -62,7 +63,7 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name, ulong na
 	ppcb->msg_var.msgout = EMPTY;
 
 	/* Initialize stack with accounting block. */
-	saddr = ((ulong)saddr) + ssize-4;
+	//saddr = ((ulong)saddr) + ssize-4;
 
 	*saddr = STACKMAGIC;
 	*--saddr = pid;

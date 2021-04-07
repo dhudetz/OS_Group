@@ -10,7 +10,7 @@
 #include <xinu.h>
 
 /* Assembly atomic operations subroutines */
-extern int _atomic_decrement_pre(int *);
+extern int _atomic_decrement(int *);
 
 /*
  * kill  --  kill a process and remove it from the system
