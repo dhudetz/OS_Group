@@ -33,11 +33,13 @@ syscall send(int pid, message msg)
 		spcb->state = PRSEND;
 		spcb->msg_var.msgout = msg;
 		rpcb->msg_var.msgqueue = spid;
+		resched();
 	}
 	else{
 		rpcb->msg_var.msgin = msg;
+		rpcb->msg_var.hasMessage = TRUE;
 		if(rpcb->state == PRRECV)
-			rpcb->state == PRREADY;
+			rpcb->state = PRREADY;
 	}
 
 	lock_release(rpcb->msg_var.core_com_lock);	

@@ -16,6 +16,7 @@
 message recv(void)
 {
 	register pcb *ppcb;
+	register pcb *spcb;
 	int senderpid = -1;
 	message msg;
 	ppcb = &proctab[currpid[getcpuid()]];
@@ -25,26 +26,23 @@ message recv(void)
 	if(ppcb->msg_var.hasMessage)
 	{
 		msg = ppcb->msg_var.msgin;
-	}
-
-	else if(nonempty(ppcb->msg_var.msgqueue))
-	{
-		msg = ppcb->msg_var.msgout;
-		ppcb->msg_var.msgin = msg;
+		ppcb->msg_var.hasMessage = FALSE;
 		ppcb->state = PRREADY;
 	}
-	
-	else if(isempty(ppcb->msg_var.msgqueue))
-	{
-		ppcb->msg_var.hasMessage = 0;
-	}
-	
-	else
-	{
-		ppcb->state = PRSEND;
-		lock_release(ppcb->msg_var.core_com_lock);
+	else{
+		ppcb->state = PRRECV;
 		resched();
-		lock_acquire(ppcb->msg_var.core_com_lock);
+	}
+	if(ppcb->msg_var.msgqueue != EMPTY)
+	{
+		spcb = &proctab[ppcb->msg_var.msgqueue];
+		ppcb->msg_var.msgin = spcb->msg_var.msgout;
+		ppcb->msg_var.hasMessage = TRUE;
+		spcb->state = PRREADY;
+		ppcb->msg_var.msgqueue = EMPTY;
+	}
+	else{
+		ppcb->msg_var.hasMessage = FALSE;	
 	}
 
 	/* TODO:
@@ -57,6 +55,6 @@ message recv(void)
  	*   return collected message
  	*/	
 	
-
+	lock_release(ppcb->msg_var.core_com_lock);
 	return msg;
 }

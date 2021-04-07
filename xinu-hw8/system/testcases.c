@@ -1,6 +1,6 @@
 /**
- * COSC 3250 - Project 6
- * reschedule processes
+ * COSC 3250 - Project 8
+ * Test cases for process messages
  * @authors Danny Hudetz Marty Boehm
  * Instructor Rubya
  * TA-BOT:MAILTO daniel.hudetz@marquette.edu martin.boehm@marquette.edu
