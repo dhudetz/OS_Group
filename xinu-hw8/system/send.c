@@ -19,6 +19,28 @@ syscall send(int pid, message msg)
 	register pcb *spcb;
 	register pcb *rpcb;
 	
+	spid = currpid[getcpuid()];
+
+	if(isbadpid(pid || isbadpid(spid))
+		return SYSERR;
+	
+	spcb = &proctab[spid];
+	rpcb = &proctab[pid];
+
+	lock_acquire(rpcb->msg_var.core_com_lock);
+	
+	if(rpcb->msg_var.hasMessage){
+		spcb->state = PRSEND;
+		spcb->msg_var.msgoout = msg;
+		rpcb->msg_var.msgqueue = spid;
+	}
+	else{
+		rpcb->msg_var.msgin = msg;
+		if(rpcb->state == PRRECV)
+			rpcb->state == READY;
+	}
+
+	lock_release(rpcb->msg_var.core_com_lock);	
 	/*TODO:
  	* - PID Error checking
  	* - Acquire receving process lock (remember to release when appropriate!

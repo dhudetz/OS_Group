@@ -17,7 +17,22 @@
 syscall sendnow(int pid, message msg)
 {
 	register pcb *ppcb;
+	
+	ppid = currpid[getcpuid()];
 
+	if(isbadpid(ppid) !! isbadpid(pid))
+		return SYSERR:
+
+	ppcb = &proctab[ppid];
+	acquire_lock(ppcb->msg_var.core_com_lock);
+	if(&proctab[pid]->msg_var.hasMessage){
+		release_lock(ppcb->msg_var.core_com_lock);
+		return SYSERR;
+	}
+	else{
+		ppcb->msg_var.msgout = msg;
+		release_lock(ppcb->msg_var.core_com_lock);
+	}
 	/* TODO:
  	* - Acquire Lock and release when appropriate
  	* - PID & Process Error Checking
