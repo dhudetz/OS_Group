@@ -27,16 +27,16 @@ syscall sendnow(int pid, message msg)
 	spcb = &proctab[ppid];
 	rpcb = &proctab[pid];
 
-	lock_acquire(spcb->msg_var.core_com_lock);
+	lock_acquire(rpcb->msg_var.core_com_lock);
 
 	if(rpcb->msg_var.hasMessage){
-		lock_release(spcb->msg_var.core_com_lock);
+		lock_release(rpcb->msg_var.core_com_lock);
 		return SYSERR;
 	}
 	else{
 		rpcb->msg_var.msgin = msg;
-		rpcb->msg_var.hasMessage = 1;
-		lock_release(spcb->msg_var.core_com_lock);
+		rpcb->msg_var.hasMessage = TRUE;
+		lock_release(rpcb->msg_var.core_com_lock);
 	}
 	/* TODO:
  	* - Acquire Lock and release when appropriate

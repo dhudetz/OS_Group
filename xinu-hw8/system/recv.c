@@ -31,7 +31,7 @@ message recv(void)
 	}
 	else{
 		ppcb->state = PRRECV;
-		resched();
+		//resched();
 	}
 	if(ppcb->msg_var.msgqueue != EMPTY)
 	{

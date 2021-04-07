@@ -33,7 +33,7 @@ syscall send(int pid, message msg)
 		spcb->state = PRSEND;
 		spcb->msg_var.msgout = msg;
 		rpcb->msg_var.msgqueue = spid;
-		resched();
+		//resched();
 	}
 	else{
 		rpcb->msg_var.msgin = msg;

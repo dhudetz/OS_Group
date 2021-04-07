@@ -37,7 +37,7 @@ syscall sendnow(int pid, message msg);
 
 /* Kernel constants */
 #define PREEMPT		TRUE 		/* preemptive rescheduling			*/
-#define AGING		TRUE 	/* queue aging prevents starvation	*/
+#define AGING		FALSE 	/* queue aging prevents starvation	*/
 
 /* Assertions */
 #define ASSERT(cond)              if ( !(cond) ) return SYSERR
