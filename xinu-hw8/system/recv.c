@@ -22,7 +22,7 @@ message recv(void)
 	
 	lock_acquire(ppcb->msg_var.core_com_lock);
 
-	if(ppcb->msg_var.hasMessge)
+	if(ppcb->msg_var.hasMessage)
 	{
 		msg = ppcb->msg_var.msgin;
 	}
@@ -36,7 +36,7 @@ message recv(void)
 	
 	else if(isempty(ppcb->msg_var.msgqueue))
 	{
-		ppcb->msg_var.hasMeassage = 0;
+		ppcb->msg_var.hasMessage = 0;
 	}
 	
 	else
