@@ -39,42 +39,10 @@ syscall freemem(void *memptr, ulong nbytes)
     nbytes = (ulong)roundmb(nbytes);
 
     im = disable();
+
     
 
-    register memhead mhead;
-    int core;
-    ulong mem = (ulong)memptr;
-    for(core = 0; core<NCORES; core++){
-        mhead = freelist[core];
-	ulong lastblock = mhead.base + mhead.bound;
-	if(mhead.base <= mem && lastblock > mem)
-	    break;
-    }
-    lock_acquire(mhead.memlock);
-    prev = mhead.head;
-    next = prev->next;
-    if(mhead.base == mem){
-        if(mem+nbytes > (ulong)prev)
- 	    return SYSERR;
-	block->length = nbytes;
-	block->next = mhead.head;
-	freelist[core].head = block;
-    }
-    else{
-        while(mem<(ulong)prev + prev->length){
-	    prev = prev->next;
-            next = next->next;
-	}
-        if(mem+nbytes > (ulong)next)
-	    return SYSERR;
-	else if(mem < (ulong)prev + prev->length)
-	    return SYSERR;	
-	prev->next = block;
-	block->next = next;
-    }
-    freelist[core].length += nbytes;
-    lock_release(mhead.memlock);
-         /* TODO:
+	/* TODO:
      *      - Determine correct freelist to return to
      *        based on block address
      *      - Acquire memory lock (memlock)
@@ -86,6 +54,6 @@ syscall freemem(void *memptr, ulong nbytes)
      *      - Coalesce with next block if adjacent
      */
 
-    restore(im);
+	restore(im);
     return OK;
 }

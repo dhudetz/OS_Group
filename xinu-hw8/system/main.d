@@ -6,7 +6,7 @@
  ../include/platform.h ../include/bcm2837.h ../include/pl011.h \
  ../include/version.h ../include/mmu.h ../include/core.h \
  ../include/queue.h ../include/proc.h ../include/clock.h \
- ../include/atomic.h
+ ../include/atomic.h ../include/message.h
 
 ../include/xinu.h:
 
@@ -55,3 +55,5 @@
 ../include/clock.h:
 
 ../include/atomic.h:
+
+../include/message.h:

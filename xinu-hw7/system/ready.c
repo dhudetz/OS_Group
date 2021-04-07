@@ -1,11 +1,10 @@
 /**
- * @file ready.c
- * @provides ready
- *
- * COSC 3250 / COEN 4820 Assignment 4
+ * COSC 3250 - Project 6
+ * makes process ready
+ * @authors Danny Hudetz Marty Boehm
+ * Instructor Rubya
+ * TA-BOT:MAILTO daniel.hudetz@marquette.edu martin.boehm@marquette.edu
  */
-/* Embedded XINU, Copyright (C) 2008.  All rights reserved. */
-
 #include <xinu.h>
 
 /**
