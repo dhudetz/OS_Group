@@ -20,6 +20,33 @@ message recv(void)
 	message msg;
 	ppcb = &proctab[currpid[getcpuid()]];
 	
+	lock_acquire(ppcb->msg_var.core_com_lock);
+
+	if(ppcb->msg_var.hasMessge)
+	{
+		msg = ppcb->msg_var.msgin;
+	}
+
+	else if(nonempty(ppcb->msg_var.msgqueue))
+	{
+		msg = ppcb->msg_var.msgout;
+		ppcb->msg_var.msgin = msg;
+		ppcb->state = PRREADY;
+	}
+	
+	else if(isempty(ppcb->msg_var.msgqueue))
+	{
+		ppcb->msg_var.hasMeassage = 0;
+	}
+	
+	else
+	{
+		ppcb->state = PRSEND;
+		lock_release(ppcb->msg_var.core_com_lock);
+		resched();
+		lock_acquire(ppcb->msg_var.core_com_lock);
+	}
+
 	/* TODO:
  	* - Remember to acquire lock and release lock when interacitng with the msg structure
  	* - Check for Message. If no message, put in blocking state and reschedule
