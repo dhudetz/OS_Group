@@ -18,7 +18,11 @@ uchar getc(void)
 {
 	uchar c;
 	irqmask im = disable();
-
+	
+	//wait(what do i put in here?);
+	c = uart.istart; //this is wrong, but what else is the first byte?
+	uart.icount -= 1;
+	uart.istart = uart.istart + 1; //how to do this with respect to the total length of buffer?
 	/* TODO:
 	 * Asynchronously read a character from the UART.
 	 * Wait for input using the appropriate semaphore.
@@ -46,6 +50,17 @@ syscall putc(char c)
 {
 	irqmask im = disable();
 	
+	if(uart.oidle == 1)
+	{
+		uart.oidle = 0;
+		uart.csr = c;
+	}
+	else
+	{
+		//wait(what do i put in here?);
+		//use the olock command found in uart.h
+		uart.out[UART_OBLEN] = uart.ostart + uart.ocount;
+	}
 	/* TODO:
 	 * First, check if the UART transmitter is idle (see include/uart.h for UART control block information).
 	 * If it is idle, set its state to busy (hint: not idle), then write the character to the
