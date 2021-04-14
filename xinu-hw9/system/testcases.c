@@ -42,7 +42,19 @@ void testcases(void)
     c = getc();
     switch (c)
     {
-
+    case '0':
+	printf("Test 1: Type char 'a': \r\n");
+	c = getc();
+	switch (c)
+	{
+	case 'a':
+		printf("PASSED: Character correct.\r\n");
+		break;
+	default:
+		printf("FAILED: Character '%c' detected instead of 'a'.\r\n", c);
+		break;
+	}
+	break;
     default:
         break;
     }
