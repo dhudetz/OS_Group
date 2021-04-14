@@ -49,7 +49,7 @@ syscall wait(semaphore sem)
      * so that multiple cores may safely wait for a semaphore.
      */
 	_atomic_decrement(semptr->count);
-	count = semptr->count;
+	c = semptr->count;
 	//c = --semptr->count;
 
     if (c < 0)
