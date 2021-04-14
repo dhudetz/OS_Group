@@ -51,9 +51,9 @@ syscall putc(char c)
 {
 	irqmask im = disable();
 	
-	if(serial_port.oidle == 1)
+	if(serial_port.oidle == TRUE)
 	{
-		serial_port.oidle = 0;
+		serial_port.oidle = FALSE;
 		((struct pl011_uart_csreg *)(serial_port.csr))->dr = c;
 	}
 	else
