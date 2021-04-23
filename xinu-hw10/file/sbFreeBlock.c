@@ -19,9 +19,10 @@
  */
 devcall sbFreeBlock(struct superblock *psuper, int block)
 {
-    // TODO: Add the block back into the filesystem's list of
-    //  free blocks.  Use the superblock's locks to guarantee
-    //  mutually exclusive access to the free list, and write
-    //  the changed free list segment(s) back to disk.
-    return SYSERR;
+
+	// TODO: Add the block back into the filesystem's list of
+ 	//  free blocks.  Use the superblock's locks to guarantee
+	//  mutually exclusive access to the free list, and write
+	//  the changed free list segment(s) back to disk.
+	return SYSERR;
 }

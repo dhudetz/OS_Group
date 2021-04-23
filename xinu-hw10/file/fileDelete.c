@@ -17,9 +17,18 @@
  */
 devcall fileDelete(int fd)
 {
-    // TODO: Unlink this file from the master directory index,
-    //  and return its space to the free disk block list.
-    //  Use the superblock's locks to guarantee mutually exclusive
-    //  access to the directory index.
-    return OK;
+	int fd = 0;
+	
+	if ((NULL == supertab) || (NULL == filetab))
+	{
+		return SYSERR;
+	}
+	
+	//look for function seek and wait
+	
+	// TODO: Unlink this file from the master directory index,
+	//  and return its space to the free disk block list.
+ 	//  Use the superblock's locks to guarantee mutually exclusive
+ 	//  access to the directory index.
+ 	return OK;
 }
