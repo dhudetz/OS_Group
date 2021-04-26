@@ -25,6 +25,31 @@ devcall fileDelete(int fd)
 	}
 	
 	//look for function seek and wait
+	//grab lock
+	wait(supertab->sb_dirlock);
+
+	//check to see if the number of entries is less than the called delete
+	if(fd >= DIRENTRIES)
+	{
+		signal(supertab->sb_dirlock);
+		return SYSERR;
+	}
+	
+	//use sbFreeBlock to free up the block
+	supertab->sb_dirlock->db_fnodes->fn_state = FILE_FREE;
+	sbFreeBlock(supertab, fd);
+
+	//overwrite the block on disk
+	seek(DISK0, supertab->sb_dirlist->db_blocknum);
+	write(DIKS0, supertab->sb_dirlist, sizeof(struct dirblock));
+
+	if(SYSERR == filetab[fd].fn_blocknum)
+	{
+		return SYSERR;
+	}
+
+	//release the lock
+	signal(supertab->sb_dirlock);
 	
 	// TODO: Unlink this file from the master directory index,
 	//  and return its space to the free disk block list.
