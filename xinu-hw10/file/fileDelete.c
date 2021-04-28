@@ -17,7 +17,6 @@
  */
 devcall fileDelete(int fd)
 {
-	int fd = 0;
 	
 	if ((NULL == supertab) || (NULL == filetab))
 	{
@@ -36,12 +35,12 @@ devcall fileDelete(int fd)
 	}
 	
 	//use sbFreeBlock to free up the block
-	supertab->sb_dirlock->db_fnodes->fn_state = FILE_FREE;
+	supertab->sb_dirlst->db_fnodes->fn_state = FILE_FREE;
 	sbFreeBlock(supertab, fd);
 
 	//overwrite the block on disk
-	seek(DISK0, supertab->sb_dirlist->db_blocknum);
-	write(DIKS0, supertab->sb_dirlist, sizeof(struct dirblock));
+	seek(DISK0, supertab->sb_dirlst->db_blocknum);
+	write(DISK0, supertab->sb_dirlst, sizeof(struct dirblock));
 
 	if(SYSERR == filetab[fd].fn_blocknum)
 	{

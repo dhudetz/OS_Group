@@ -1,3 +1,12 @@
+/**
+ * COSC 3250 - Assignment 10
+ * Allows xinu to delete files, at least I really hope so
+ * @authors Marty Boehm Danny Hudetz
+ * Instructor Sabirat Rubya
+ * TA-BOT:MAILTO martin.boehm@marquette.edu
+ */
+
+
 /* sbFreeBlock.c - sbFreeBlock */
 /* Copyright (C) 2008, Marquette University.  All rights reserved. */
 /*                                                                 */
@@ -21,7 +30,7 @@ devcall sbFreeBlock(struct superblock *psuper, int block)
 {
 	//declare the variables
 	struct dentry *phw;
-	struct freeblock *freeblk;
+	struct freeblock *freeblk, *free2;
 	struct dirblock *swizzle;
 	int diskfd;
 
@@ -36,10 +45,9 @@ devcall sbFreeBlock(struct superblock *psuper, int block)
 		return SYSERR;
 	}
 	diskfd = phw - devtab;
-	freeblk = psuper->sb_freelist;
+	freeblk = psuper->sb_freelst;
 	if(NULL == freeblk)
 	{
-		printf("sbGetFree() ERROR: SUPERBLOCK FREELIST IS EMPTY!\n");
 		return SYSERR;
 	}
 	
@@ -63,9 +71,9 @@ devcall sbFreeBlock(struct superblock *psuper, int block)
 			signal(psuper->sb_freelock);
 			return SYSERR;
 		}
-		psuper->sb_freelist = NULL;
+		psuper->sb_freelst = NULL;
 		swizzle = psuper->sb_dirlst;
-		psuper-sb_dirlst = (struct dirblock *)swizzle->db_blocknum;
+		psuper->sb_dirlst = (struct dirblock*)swizzle->db_blocknum;
 		seek(diskfd, psuper->sb_blocknum);
 		if(SYSERR == write(diskfd, psuper, sizeof(struct superblock)))
 		{
@@ -76,12 +84,42 @@ devcall sbFreeBlock(struct superblock *psuper, int block)
 		freeblk->fr_next = 0;
 		freeblk->fr_count = 1;
 		freeblk->fr_free[freeblk->fr_count - 1] = block;
-		seek(DISK0, spuertab->sb_dirlst->db_blocknum);
-		write(DISK0, supertab->sb_dirlst, sizeof(struct dirblock));
+		seek(diskfd, freeblk->fr_blocknum);
+		if(SYSERR == write(diskfd, freeblk, sizeof(struct freeblock)))
+		{
+			return SYSERR;
+		}
 		signal(psuper->sb_freelock);
 	}
 	
 	//now, go with if there is one but it is full
+	if(freeblk->fr_count >= FREEBLOCKMAX)
+	{
+		free2 = (struct freeblock*)malloc(sizeof(struct freeblock*));
+		free2->fr_blocknum = (int)free2;
+		free2->fr_next = 0;
+		free2->fr_count = 1;
+		free2->fr_free[free2->fr_count - 1] = block;
+		freeblk->fr_next = free2;
+		seek(diskfd, free2->fr_blocknum);
+		if(SYSERR == write(diskfd, free2, sizeof(struct freeblock)))
+		{
+			return SYSERR;
+		}
+		signal(psuper->sb_freelock);
+	}
+
+	//lastly, the block is present AND it is not full
+	if(NULL == freeblk->fr_next)
+	{
+		freeblk->fr_count++;
+		freeblk->fr_free[freeblk->fr_count - 1] = block;
+		seek(diskfd, freeblk->fr_blocknum);
+		if(SYSERR == write(diskfd, freeblk, sizeof(struct freeblock)))
+		{
+			return SYSERR;
+		}
+	}
 
 	//release the lock
 	signal(psuper->sb_freelock);
